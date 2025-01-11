@@ -1,17 +1,16 @@
 "use client"
 import { Button } from "@/components/Button"
-import { handleNavigation } from "@/utils/webview-study/handleNavigation"
-import { useRouter } from "next/navigation"
+import useNavigation from "@/hooks/webview-study/useNavigation"
 interface Params {
   id: string
 }
 export function ActionButtons({ id }: Params) {
-  const router = useRouter()
+  const navigation = useNavigation()
   return (
     <article className="flex flex-wrap">
       <Button
         className="bg-primary hover:bg-primary-60 text-light text-sm dark:bg-primary-70 dark:hover:bg-primary-80"
-        onClick={() => handleNavigation(`/game/${id}`, "push", router)}
+        onClick={() => navigation(`/game/${id}`, "push")}
       >
         게임시작
       </Button>
