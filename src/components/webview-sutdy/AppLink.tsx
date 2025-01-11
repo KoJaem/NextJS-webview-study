@@ -1,7 +1,8 @@
 "use client"
 
+import { cn } from "@/utils/cn"
 import Link, { LinkProps } from "next/link"
-import { MouseEvent, ReactNode } from "react"
+import { MouseEvent, ReactNode, useEffect, useState } from "react"
 
 interface AppLinkProps extends LinkProps {
   children: ReactNode
@@ -9,10 +10,16 @@ interface AppLinkProps extends LinkProps {
 }
 
 export default function AppLink({ children, className, ...props }: AppLinkProps) {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   const LinkClick = (e: MouseEvent) => {
     if (window.ReactNativeWebView) {
-      e.preventDefault() // 기본 이벤트 방지
-      e.stopPropagation() // 이벤트 전파 방지
+      e.preventDefault()
+      e.stopPropagation()
       window.ReactNativeWebView.postMessage(
         JSON.stringify({
           type: "navigation",
@@ -25,13 +32,17 @@ export default function AppLink({ children, className, ...props }: AppLinkProps)
 
   return (
     <section onClick={LinkClick}>
-      {!window.ReactNativeWebView ? (
-        <Link {...props} className={className}>
-          {children}
-        </Link>
-      ) : (
-        <span className={className}>{children}</span> // 이벤트 차단용 대체 태그
-      )}
+      <Link
+        {...props}
+        className={cn(
+          className,
+          mounted && typeof window !== "undefined" && window.ReactNativeWebView
+            ? "pointer-events-none"
+            : "pointer-events-auto"
+        )}
+      >
+        {children}
+      </Link>
     </section>
   )
 }
