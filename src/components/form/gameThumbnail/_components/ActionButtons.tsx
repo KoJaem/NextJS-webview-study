@@ -1,5 +1,6 @@
 "use client"
 import { Button } from "@/components/Button"
+import { handleNavigation } from "@/utils/webview-study/handleNavigation"
 import { useRouter } from "next/navigation"
 interface Params {
   id: string
@@ -10,7 +11,7 @@ export function ActionButtons({ id }: Params) {
     <article className="flex flex-wrap">
       <Button
         className="bg-primary hover:bg-primary-60 text-light text-sm dark:bg-primary-70 dark:hover:bg-primary-80"
-        onClick={() => router.push(`/game/${id}`)}
+        onClick={() => handleNavigation(`/game/${id}`, "push", router)}
       >
         게임시작
       </Button>

@@ -1,4 +1,5 @@
 "use client"
+import AppLink from "@/components/webview-sutdy/AppLink"
 import { getOS } from "@/utils/device"
 import { useEffect, useState } from "react"
 
@@ -56,6 +57,7 @@ const Home = () => {
       <h1>Hello, WebView!</h1>
       <p>받은데이터: {text || "없음"}</p>
       <button onClick={sendMessageToNativeApp}>Send Message to React Native</button>
+      <AppLink href={"/dummy"}>더미페이지 테스트</AppLink>
     </div>
   )
 }
