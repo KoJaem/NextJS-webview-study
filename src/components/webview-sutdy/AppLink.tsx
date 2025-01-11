@@ -1,5 +1,7 @@
 "use client"
 
+import type { NavigationType } from "@/constants/webview-study/types/navigation.type"
+import { WEBVIEW_POST_MESSAGE } from "@/constants/webview-study/webviewPostMessage"
 import { cn } from "@/utils/cn"
 import Link, { LinkProps } from "next/link"
 import { MouseEvent, ReactNode, useEffect, useState } from "react"
@@ -22,10 +24,10 @@ export default function AppLink({ children, className, ...props }: AppLinkProps)
       e.stopPropagation()
       window.ReactNativeWebView.postMessage(
         JSON.stringify({
-          type: "navigation",
-          method: "push",
-          path: props.href
-        })
+          type: WEBVIEW_POST_MESSAGE.NAVIGATION.TYPE,
+          method: WEBVIEW_POST_MESSAGE.NAVIGATION.METHOD.PUSH,
+          path: props.href as string
+        } satisfies NavigationType)
       )
     }
   }
