@@ -1,36 +1,54 @@
 "use client"
-// pages/index.tsx (Next.js)
+import { getOS } from "@/utils/device"
 import { useEffect, useState } from "react"
 
 const Home = () => {
   const [text, setText] = useState<string>()
+
   useEffect(() => {
-    // React Native로부터 메시지를 받기 위한 이벤트 리스너 설정
+    // 이벤트 리스너 함수
     const handleMessage = (event: MessageEvent) => {
       setText(event.data)
     }
 
-    // Android에서 document.addEventListener로 이벤트 처리
-    if (navigator.userAgent.includes("Android")) {
-      document.addEventListener("message", handleMessage as EventListener)
-    } else {
-      // iOS의 경우 기존의 window.addEventListener 사용
-      window.addEventListener("message", handleMessage)
+    const os = getOS()
+
+    const addMessageListener = () => {
+      if (os === "android") {
+        document.addEventListener("message", handleMessage as EventListener)
+      } else if (os === "ios") {
+        window.addEventListener("message", handleMessage)
+      }
     }
 
-    // 컴포넌트 언마운트 시 리스너 제거
-    return () => {
-      if (navigator.userAgent.includes("Android")) {
+    // 운영체제에 맞는 이벤트 리스너 제거
+    const removeMessageListener = () => {
+      if (os === "android") {
         document.removeEventListener("message", handleMessage as EventListener)
-      } else {
+      } else if (os === "ios") {
         window.removeEventListener("message", handleMessage)
       }
     }
+
+    // 컴포넌트가 마운트될 때 이벤트 리스너 추가
+    addMessageListener()
+
+    // 컴포넌트 언마운트 시 이벤트 리스너 제거
+    return () => removeMessageListener()
   }, [])
 
   // WebView에서 전송된 메시지에 대한 반응
   const sendMessageToNativeApp = () => {
-    window.postMessage("Hello from Next.js!", "*")
+    // * 데이터가 여러개 입력되는경우 JSON.stringify 필수
+    if (window.ReactNativeWebView) {
+      // window.ReactNativeWebView.postMessage(JSON.stringify("Hello from Next.js!"))
+      window.ReactNativeWebView.postMessage(
+        JSON.stringify({
+          content: "텍스트",
+          type: "test"
+        })
+      )
+    }
   }
 
   return (
